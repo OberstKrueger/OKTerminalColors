@@ -4,6 +4,8 @@
 
  */
 
+import Darwin.POSIX.unistd
+
 private let beginCode: String = "\u{001b}["
 private let endCode: String   = "\u{001b}[0m"
 
@@ -45,18 +47,23 @@ public extension String {
     /// Prints String in the provided color.
     /// - parameters:
     ///     - color: The foreground color.
-    func color(_ color: ForegroundColor) -> String { return "\(beginCode)\(color.rawValue)m\(self)\(endCode)" }
+    func color(_ color: ForegroundColor) -> String {
+        return isatty(STDOUT_FILENO) != 0 ? "\(beginCode)\(color.rawValue)m\(self)\(endCode)" : self
+    }
 
     /// Prints String with provided color as background.
     /// - parameters:
     ///     - color: The background color.
-    func background(_ color: BackgroundColor) -> String { return "\(beginCode)\(color.rawValue)m\(self)\(endCode)" }
+    func background(_ color: BackgroundColor) -> String {
+        return isatty(STDOUT_FILENO) != 0 ? "\(beginCode)\(color.rawValue)m\(self)\(endCode)" : self
+    }
 
     /// Prints String with the provided style(s).
     /// - parameters:
     ///     - styles: One or more terminal styles to apply.
     /// - Note: Styles .normal and .bold are contradictory. If both are provided, the first one entered will display.
     func style(_ styles: TerminalStyle...) -> String {
-        return styles.count == 0 ? self : "\(styles.map({"\(beginCode)\($0.rawValue)m"}).joined())\(self)\(endCode)"
+        if isatty(STDOUT_FILENO) != 0 || styles.count == 0 { return self }
+        return "\(styles.map({"\(beginCode)\($0.rawValue)m"}).joined())\(self)\(endCode)"
     }
 }
