@@ -3,16 +3,16 @@
 import PackageDescription
 
 let package = Package(
-    name: "SwiftyTerminalColors",
+    name: "OKTerminalColors",
     products: [
         .library(
-            name: "SwiftyTerminalColors",
-            targets: ["SwiftyTerminalColors"])
+            name: "OKTerminalColors",
+            targets: ["OKTerminalColors"])
     ],
     dependencies: [],
     targets: [
         .target(
-            name: "SwiftyTerminalColors",
+            name: "OKTerminalColors",
             dependencies: []
         )
     ]
