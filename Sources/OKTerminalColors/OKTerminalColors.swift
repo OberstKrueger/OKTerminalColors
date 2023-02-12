@@ -1,9 +1,3 @@
-/*
-
- ANSI terminal codes referenced from https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
-
- */
-
 import Darwin.POSIX.unistd
 
 private let beginCode: String = "\u{001b}["
