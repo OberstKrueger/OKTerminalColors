@@ -57,7 +57,10 @@ public extension String {
     ///     - styles: One or more terminal styles to apply.
     /// - Note: Styles .normal and .bold are contradictory. If both are provided, the first one entered will display.
     func style(_ styles: TerminalStyle...) -> String {
-        if isatty(STDOUT_FILENO) != 0 || styles.count == 0 { return self }
-        return "\(styles.map({"\(beginCode)\($0.rawValue)m"}).joined())\(self)\(endCode)"
+        if isatty(STDOUT_FILENO) != 0 && styles.count > 0 {
+            return "\(styles.map({"\(beginCode)\($0.rawValue)m"}).joined())\(self)\(endCode)"
+        }
+
+        return self
     }
 }
