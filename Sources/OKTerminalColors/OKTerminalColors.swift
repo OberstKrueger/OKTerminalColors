@@ -1,7 +1,25 @@
-import Darwin.POSIX.unistd
+#if canImport(Darwin)
+import Darwin
+#elseif canImport(Glibc)
+import Glibc
+#elseif canImport(Musl)
+import Musl
+#elseif canImport(ucrt)
+import ucrt
+#endif
 
 private let beginCode: String = "\u{001b}["
 private let endCode: String   = "\u{001b}[0m"
+
+private let istty: Bool = {
+    #if canImport(Darwin) || canImport(Glibc) || canImport(Musl)
+    return isatty(STDOUT_FILENO) != 0
+    #elseif canImport(ucrt)
+    return _isatty(1) != 0
+    #else
+    return false
+    #endif
+}()
 
 public enum ForegroundColor: UInt8 {
     case black      = 30
@@ -42,21 +60,21 @@ public extension String {
     /// - parameters:
     ///     - color: The foreground color.
     func color(_ color: ForegroundColor) -> String {
-        return isatty(STDOUT_FILENO) != 0 ? "\(beginCode)\(color.rawValue)m\(self)\(endCode)" : self
+        return istty ? "\(beginCode)\(color.rawValue)m\(self)\(endCode)" : self
     }
 
     /// Prints String with provided color as background.
     /// - parameters:
     ///     - color: The background color.
     func background(_ color: BackgroundColor) -> String {
-        return isatty(STDOUT_FILENO) != 0 ? "\(beginCode)\(color.rawValue)m\(self)\(endCode)" : self
+        return istty ? "\(beginCode)\(color.rawValue)m\(self)\(endCode)" : self
     }
 
     /// Prints String with the provided style(s).
     /// - parameters:
     ///     - styles: One or more terminal styles to apply.
     func style(_ styles: TerminalStyle...) -> String {
-        if isatty(STDOUT_FILENO) != 0 && styles.count > 0 {
+        if istty && !styles.isEmpty {
             return "\(styles.map({"\(beginCode)\($0.rawValue)m"}).joined())\(self)\(endCode)"
         }
 
