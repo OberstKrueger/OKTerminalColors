@@ -75,7 +75,8 @@ public extension String {
     ///     - styles: One or more terminal styles to apply.
     func style(_ styles: TerminalStyle...) -> String {
         if istty && !styles.isEmpty {
-            return "\(styles.map({"\(beginCode)\($0.rawValue)m"}).joined())\(self)\(endCode)"
+            let codes = styles.map { String($0.rawValue) }.joined(separator: ";")
+            return "\(beginCode)\(codes)m\(self)\(endCode)"
         }
 
         return self
