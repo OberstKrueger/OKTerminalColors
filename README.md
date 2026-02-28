@@ -35,7 +35,7 @@ print(text.style(.bold))
 
 text = "Text can have multiple styles too."
 
-print(text.style([.bold, .blink])
+print(text.style(.bold, .blink))
 
 ```
 
@@ -52,7 +52,7 @@ The following ANSI terminal codes are used, and are referenced from [https://en.
 | Underline | 4    |
 | Blink     | 5    |
 | Reverse   | 7    |
-| Coneal    | 8    |
+| Conceal   | 8    |
 | Strike    | 9    |
 
 | Color   | Foreground | Background |
